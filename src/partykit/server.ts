@@ -6,8 +6,18 @@ function getDefaultPlayers() {
 }
 
 function getDefaultMosiac() {
+  const challenges = [
+    "A smiley face",
+    "The number 3",
+    "The letter A",
+    "The letter T",
+    "A house",
+    "A tree",
+    "A cat face",
+    "A grinning face",
+  ];
   return <Mosaic>{
-    challenge: "The number 3",
+    challenge: challenges[Math.floor(Math.random() * challenges.length)],
     size: 15,
     tiles: {},
     players: 0,
@@ -42,6 +52,7 @@ export default {
       const players = (await room.storage.get("players")) as Set<string>;
       const mosaic = (await room.storage.get("mosaic")) as Mosaic;
       players.add(websocket.id);
+      await room.storage.put("players", players);
       mosaic.tiles[`${msg.tile.i},${msg.tile.j}`] = msg.tile;
       mosaic.turns++;
       mosaic.players = players.size;

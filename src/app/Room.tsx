@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import usePartySocket from "partysocket/react";
 import type { Mosaic, Message, Tile } from "@/partykit/types";
 import Grid from "./Grid";
+import Reset from "./Reset";
 
 const host = process.env.NEXT_PUBLIC_PARTYKIT_HOST!;
 const protocol =
@@ -94,12 +95,9 @@ export default function Room(props: { roomId: string }) {
         turnDue={turnDue}
         handleTurn={handleTurn}
       />
-      <button
-        className="bg-white hover:bg-red-200 px-2 py-1 rounded-sm mt-12"
-        onClick={handleReset}
-      >
-        Reset
-      </button>
+      <div className="mt-12">
+        <Reset handleReset={handleReset} />
+      </div>
     </div>
   );
 }
