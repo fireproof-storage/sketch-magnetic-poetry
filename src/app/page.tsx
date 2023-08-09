@@ -1,12 +1,12 @@
-import Image from "next/image";
-
+import Room from "./Room";
 export default function Home() {
   return (
     <main
-      className="flex min-h-screen flex-col items-center justify-between p-6"
+      className="flex min-h-screen flex-col items-center justify-start p-6"
       style={{ minHeight: "100dvh" }}
     >
-      <h1 className="text-4xl font-semibold">Mosaic</h1>
+      <h1 className="text-4xl font-semibold pb-6">Mosaic</h1>
+      <Room roomId="test" />
     </main>
   );
 }

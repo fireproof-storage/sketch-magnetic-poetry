@@ -9,14 +9,14 @@ export type Mosaic = {
   challenge: string;
   // always a square
   size: number;
-  tiles: {
-    // key: `${i},${j}`
-    [key: string]: Tile;
-  };
-  // player: websocket id
-  players: Set<string>;
+  // key: `${i},${j}`
+  tiles: Record<string, Tile>;
+  // count
+  players: number;
   // count
   turns: number;
+  // datetime
+  startedAt: number;
 };
 
 export type SyncMessage = {
@@ -27,11 +27,17 @@ export type SyncMessage = {
 export type UpdateMessage = {
   type: "update";
   tile: Tile;
+  turns: number;
+  players: number;
 };
 
-export type SetMessage = {
-  type: "set";
+export type TurnMessage = {
+  type: "turn";
   tile: Tile;
 };
 
-export type Message = SyncMessage | UpdateMessage | SetMessage;
+export type ResetMessage = {
+  type: "reset";
+};
+
+export type Message = SyncMessage | UpdateMessage | TurnMessage | ResetMessage;
