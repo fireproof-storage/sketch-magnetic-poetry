@@ -72,6 +72,11 @@ export default function Grid(props: {
           ></button>
         </div>
       )}
+      {!turnDue && (
+        <div className="italic flex flex-row gap-1 justify-center items-center">
+          Waiting...
+        </div>
+      )}
     </div>
   );
 }
