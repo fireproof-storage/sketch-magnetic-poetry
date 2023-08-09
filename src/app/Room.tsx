@@ -83,10 +83,10 @@ export default function Room(props: { roomId: string }) {
       <h2 className="text-3xl font-semibold">
         Draw... <span className="bg-white">{mosaic.challenge}</span>
       </h2>
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-row gap-2 text-sm">
         <p>Turns: {mosaic.turns}</p>
         <p>Players: {mosaic.players}</p>
-        <p>Started: {startedAgo} seconds ago</p>
+        <p>Started: {startedAgo}s ago</p>
       </div>
       <Grid
         size={mosaic.size}
