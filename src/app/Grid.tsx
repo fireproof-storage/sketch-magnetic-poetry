@@ -35,7 +35,7 @@ export default function Grid(props: {
           ? "bg-red-500"
           : tile?.color
           ? `bg-${tile.color}`
-          : "bg-black/10";
+          : "bg-white";
       row.push(<div key={`${i},${j}`} className={`w-5 h-5 ${tileColor}`} />);
     }
     grid.push(

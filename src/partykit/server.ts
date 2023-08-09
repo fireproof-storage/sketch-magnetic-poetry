@@ -8,7 +8,7 @@ function getDefaultPlayers() {
 function getDefaultMosiac() {
   return <Mosaic>{
     challenge: "The number 3",
-    size: 20,
+    size: 15,
     tiles: {},
     players: 0,
     turns: 0,

@@ -83,21 +83,19 @@ export default function Room(props: { roomId: string }) {
       <h2 className="text-3xl font-semibold">
         Draw... <span className="bg-white">{mosaic.challenge}</span>
       </h2>
+      <div className="flex flex-row gap-4">
+        <p>Turns: {mosaic.turns}</p>
+        <p>Players: {mosaic.players}</p>
+        <p>Started: {startedAgo} seconds ago</p>
+      </div>
       <Grid
         size={mosaic.size}
         tiles={mosaic.tiles}
         turnDue={turnDue}
         handleTurn={handleTurn}
       />
-
-      <div className="flex flex-col gap-1">
-        <h3 className="font-semibold">Stats</h3>
-        <p>Turns: {mosaic.turns}</p>
-        <p>Players: {mosaic.players}</p>
-        <p>Started: {startedAgo} seconds ago</p>
-      </div>
       <button
-        className="bg-white hover:bg-red-200 px-2 py-1 rounded-sm"
+        className="bg-white hover:bg-red-200 px-2 py-1 rounded-sm mt-12"
         onClick={handleReset}
       >
         Reset
