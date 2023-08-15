@@ -4,7 +4,7 @@ This is a multiplayer drawing challenge web toy, and can be found at [mosaic-par
 
 Each turn, a user is asked whether a random tile should be black or white according to a given challenge. All users see the same mosaic, and all users play at the same time. It's fun to see how quickly the image converges... or doesn't.
 
-![image](https://github.com/partykit/sketch-mosaic/assets/265390/284a7f4e-5c86-40f5-8255-25089f3afaf9)
+![image](/assets/screenshot.png)
 
 ## Experimental!
 
