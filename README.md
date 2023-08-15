@@ -1,34 +1,22 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# sketch-mosaic
 
-## Getting Started
+This is a multiplayer drawing challenge web toy, and can be found at [mosaic-party.vercel.app](https://mosaic-party.vercel.app).
 
-First, run the development server:
+Each turn, a user is asked whether a random tile should be black or white according to a given challenge. All users see the same mosaic, and all users play at the same time. It's fun to see how quickly the image converges... or doesn't.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+![image](https://github.com/partykit/sketch-mosaic/assets/265390/284a7f4e-5c86-40f5-8255-25089f3afaf9)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Experimental!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This app was created during [Matt](https://interconnected.org)'s summer 2023 residency. The purpose is to experiment with multiplayer interactions, and simultaneously see what PartyKit can do. It's called a sketch because it's lightweight and quick, and because we learn something in making it.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## What you'll find here
 
-## Learn More
+This app is based on Next.js and PartyKit.
 
-To learn more about Next.js, take a look at the following resources:
+To share state, PartyKit keeps a `Mosaic` object in party-side storage. When a client connects, it receives the entire object in a websocket message called `sync`. When a client makes a turn, the new tile is added to the mosaic, and broadcast to all others in the room as an `update` message.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To see this code:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- server (party-side): `src/partykit/server.ts`
+- client: `src/app/Room.ts`
