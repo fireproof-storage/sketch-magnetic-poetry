@@ -1,4 +1,6 @@
 import Room from "./Room";
+import { MOSAIC_ROOM_ID } from "@/partykit/shared";
+
 export default function Home() {
   return (
     <main
@@ -6,7 +8,7 @@ export default function Home() {
       style={{ minHeight: "100dvh" }}
     >
       <h1 className="text-4xl font-semibold pb-6">Mosaic Challenge</h1>
-      <Room roomId="test" />
+      <Room roomId={MOSAIC_ROOM_ID} />
     </main>
   );
 }

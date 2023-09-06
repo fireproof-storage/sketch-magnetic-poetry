@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import usePartySocket from "partysocket/react";
-import type { Mosaic, Message, Tile } from "@/partykit/types";
+import type { Mosaic, Message, Tile } from "@/partykit/shared";
 import Grid from "./Grid";
 import Reset from "./Reset";
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Tile } from "@/partykit/types";
+import type { Tile } from "@/partykit/shared";
 
 export default function Grid(props: {
   size: number;
@@ -20,7 +20,7 @@ export default function Grid(props: {
     } else {
       setTileInPlay(null);
     }
-  }, [turnDue]);
+  }, [turnDue, size]);
 
   const tileInPlayKey = tileInPlay?.join(",");
   // grid is an array of JSX elements, and it needs to be typed properly

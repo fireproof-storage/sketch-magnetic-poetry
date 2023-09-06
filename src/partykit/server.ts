@@ -5,9 +5,11 @@ import type {
   PartyConnectionContext,
   Party,
   PartyWorker,
+  PartyRequest,
 } from "partykit/server";
 
-import type { Mosaic, SyncMessage, UpdateMessage } from "./types";
+import type { Mosaic, SyncMessage, UpdateMessage } from "./shared";
+import { MOSAIC_ROOM_ID } from "./shared";
 
 function getDefaultPlayers() {
   return new Set<string>();
@@ -99,6 +101,27 @@ export default class MosaicParty implements PartyServer {
       };
       this.party.broadcast(JSON.stringify(msg), []);
     }
+  }
+
+  // As a debug endpoint, return the current state of the game from room storage
+  // The url is NEXT_PUBLIC_PARTYKIT_HOST/party/MOSAIC_ROOM_ID
+  // e.g. in dev: http://127.0.0.1:1999/party/announcer
+  async onRequest(req: PartyRequest) {
+    if (this.party.id !== MOSAIC_ROOM_ID) {
+      return new Response("Not found", { status: 404 });
+    }
+
+    if (req.method === "GET") {
+      const players = (await this.party.storage.get("players")) as Set<string>;
+      const mosaic = (await this.party.storage.get("mosaic")) as Mosaic;
+      const dump = {
+        players: Array.from(players),
+        mosaic: mosaic,
+      };
+      return new Response(JSON.stringify(dump, null, 2));
+    }
+
+    return new Response("Method not implemented", { status: 501 });
   }
 }
 MosaicParty satisfies PartyWorker;

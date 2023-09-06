@@ -20,3 +20,18 @@ To see this code:
 
 - server (party-side): `src/partykit/server.ts`
 - client: `src/app/Room.ts`
+
+## To run this locally
+
+Clone the repo, then (assuming you have Node.js installed):
+
+```bash
+npm install
+cp .env.example .env  # tells the app where to find the partyserver
+npx partykit dev  # runs the partyserver
+npm run dev       # runs the app
+```
+
+Then go to [localhost:3000](http://localhost:3000) to use the app (check out multiplayer by opening multiple browser windows).
+
+The state of the game is kept in room storage. There's a debug endpoint so you can see the current state (you'll need to refresh the page to see changes). Go to [127.0.0.1:1999/party/announcer](http://127.0.0.1:1999/party/announcer) -- check out the the partyserver code for how this works.

@@ -1,3 +1,5 @@
+export const MOSAIC_ROOM_ID = "announcer";
+
 export type Tile = {
   color: "black" | "white";
   i: number;
