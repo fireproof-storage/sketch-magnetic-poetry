@@ -1,5 +1,13 @@
-import type { PartyKitServer } from "partykit/server";
-import { Mosaic, SyncMessage, UpdateMessage } from "./types";
+import type {
+  PartyServer,
+  PartyServerOptions,
+  PartyConnection,
+  PartyConnectionContext,
+  Party,
+  PartyWorker,
+} from "partykit/server";
+
+import type { Mosaic, SyncMessage, UpdateMessage } from "./types";
 
 function getDefaultPlayers() {
   return new Set<string>();
@@ -26,53 +34,71 @@ function getDefaultMosiac() {
   };
 }
 
-export default {
-  async onConnect(websocket, room) {
-    let players = (await room.storage.get("players")) as Set<string>;
-    let mosaic = (await room.storage.get("mosaic")) as Mosaic;
+export default class MosaicParty implements PartyServer {
+  readonly options: PartyServerOptions = {
+    hibernate: true,
+  };
 
-    if (!players) {
-      await room.storage.put("players", getDefaultPlayers());
-    }
+  constructor(public party: Party) {}
 
-    if (!mosaic) {
-      await room.storage.put("mosaic", getDefaultMosiac());
+  async resetGame() {
+    await this.party.storage.put("players", getDefaultPlayers());
+    const mosaic = getDefaultMosiac();
+    await this.party.storage.put("mosaic", mosaic);
+    return mosaic;
+  }
+
+  async onStart() {
+    const players = (await this.party.storage.get("players")) as Set<string>;
+    const mosaic = (await this.party.storage.get("mosaic")) as Mosaic;
+    if (!players || !mosaic) {
+      this.resetGame();
     }
+  }
+
+  async onConnect(connection: PartyConnection, ctx: PartyConnectionContext) {
+    let mosaic = (await this.party.storage.get("mosaic")) as Mosaic;
 
     const msg = <SyncMessage>{
       type: "sync",
       mosaic: mosaic,
     };
-    websocket.send(JSON.stringify(msg));
-  },
+    connection.send(JSON.stringify(msg));
+  }
 
-  async onMessage(message, websocket, room) {
-    const msg = JSON.parse(message as string);
+  async onMessage(message: string, connection: PartyConnection) {
+    const msg = JSON.parse(message);
     if (msg.type === "turn") {
-      const players = (await room.storage.get("players")) as Set<string>;
-      const mosaic = (await room.storage.get("mosaic")) as Mosaic;
-      players.add(websocket.id);
-      await room.storage.put("players", players);
+      const players = (await this.party.storage.get("players")) as Set<string>;
+      const mosaic = (await this.party.storage.get("mosaic")) as Mosaic;
+
+      // Record the player
+      players.add(connection.id);
+      await this.party.storage.put("players", players);
+
+      // Record the tile change
       mosaic.tiles[`${msg.tile.i},${msg.tile.j}`] = msg.tile;
       mosaic.turns++;
       mosaic.players = players.size;
-      await room.storage.put("mosaic", mosaic);
+      await this.party.storage.put("mosaic", mosaic);
+
+      // Broadcast the new move to all connections
       const update = <UpdateMessage>{
         type: "update",
         tile: msg.tile,
         turns: mosaic.turns,
         players: mosaic.players,
       };
-      room.broadcast(JSON.stringify(update), []);
+      this.party.broadcast(JSON.stringify(update), []);
     } else if (msg.type === "reset") {
-      await room.storage.put("players", getDefaultPlayers());
-      const mosaic = getDefaultMosiac();
-      await room.storage.put("mosaic", mosaic);
+      // Reset storage to defaults, and tell the whole party
+      const newMosaic = await this.resetGame();
       const msg = <SyncMessage>{
         type: "sync",
-        mosaic: mosaic,
+        mosaic: newMosaic,
       };
-      room.broadcast(JSON.stringify(msg), []);
+      this.party.broadcast(JSON.stringify(msg), []);
     }
-  },
-} satisfies PartyKitServer;
+  }
+}
+MosaicParty satisfies PartyWorker;
