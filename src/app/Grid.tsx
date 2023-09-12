@@ -33,9 +33,9 @@ export default function Grid(props: {
       const tileColor =
         tileKey === tileInPlayKey
           ? "bg-red-500"
-          : tile?.color
-          ? `bg-${tile.color}`
-          : "bg-white";
+          : tile?.color === "black"
+          ? `bg-black`
+          : "bg-white/50";
       row.push(<div key={`${i},${j}`} className={`w-5 h-5 ${tileColor}`} />);
     }
     grid.push(
@@ -71,7 +71,7 @@ export default function Grid(props: {
               onClick={() => handleTileDecision("black")}
             ></button>
             <button
-              className="w-8 h-8 bg-white outline outline-4 outline-red-500/20 hover:outline-red-500"
+              className="w-8 h-8 bg-white/50 outline outline-4 outline-red-500/20 hover:outline-red-500"
               onClick={() => handleTileDecision("white")}
             ></button>
           </>
