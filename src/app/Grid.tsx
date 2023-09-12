@@ -59,16 +59,19 @@ export default function Grid(props: {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">{grid}</div>
-      <div className="h-10 flex flex-row gap-1 justify-center items-center">
+      <div className="h-10 flex flex-row gap-3 justify-center items-center">
         {turnDue && (
           <>
-            <div className="">Should the highlighted tile be...</div>
+            <div>
+              <span className="font-semibold">Choose!</span> Should the red tile
+              be...
+            </div>
             <button
-              className="w-8 h-8 bg-black outline outline-4 outline-transparent hover:outline-red-500"
+              className="w-8 h-8 bg-black outline outline-4 outline-red-500/20 hover:outline-red-500"
               onClick={() => handleTileDecision("black")}
             ></button>
             <button
-              className="w-8 h-8 bg-white outline outline-4 outline-transparent hover:outline-red-500"
+              className="w-8 h-8 bg-white outline outline-4 outline-red-500/20 hover:outline-red-500"
               onClick={() => handleTileDecision("white")}
             ></button>
           </>

@@ -1,11 +1,9 @@
 import type {
-  PartyServer,
-  PartyServerOptions,
-  PartyConnection,
-  PartyConnectionContext,
   Party,
-  PartyWorker,
-  PartyRequest,
+  PartyKitServer,
+  Connection,
+  ConnectionContext,
+  Request,
 } from "partykit/server";
 
 import type { Mosaic, SyncMessage, UpdateMessage } from "./shared";
@@ -36,8 +34,8 @@ function getDefaultMosiac() {
   };
 }
 
-export default class MosaicParty implements PartyServer {
-  readonly options: PartyServerOptions = {
+export default class MosaicParty implements PartyKitServer {
+  readonly options = {
     hibernate: true,
   };
 
@@ -58,7 +56,11 @@ export default class MosaicParty implements PartyServer {
     }
   }
 
-  async onConnect(connection: PartyConnection, ctx: PartyConnectionContext) {
+  async onConnect(
+    connection: Connection,
+    party: Party,
+    ctx: ConnectionContext
+  ) {
     let mosaic = (await this.party.storage.get("mosaic")) as Mosaic;
 
     const msg = <SyncMessage>{
@@ -68,8 +70,8 @@ export default class MosaicParty implements PartyServer {
     connection.send(JSON.stringify(msg));
   }
 
-  async onMessage(message: string, connection: PartyConnection) {
-    const msg = JSON.parse(message);
+  async onMessage(message: string | ArrayBuffer, connection: Connection) {
+    const msg = JSON.parse(message as string);
     if (msg.type === "turn") {
       const players = (await this.party.storage.get("players")) as Set<string>;
       const mosaic = (await this.party.storage.get("mosaic")) as Mosaic;
@@ -106,7 +108,7 @@ export default class MosaicParty implements PartyServer {
   // As a debug endpoint, return the current state of the game from room storage
   // The url is NEXT_PUBLIC_PARTYKIT_HOST/party/MOSAIC_ROOM_ID
   // e.g. in dev: http://127.0.0.1:1999/party/announcer
-  async onRequest(req: PartyRequest) {
+  async onRequest(req: Request) {
     if (this.party.id !== MOSAIC_ROOM_ID) {
       return new Response("Not found", { status: 404 });
     }
@@ -124,4 +126,3 @@ export default class MosaicParty implements PartyServer {
     return new Response("Method not implemented", { status: 501 });
   }
 }
-MosaicParty satisfies PartyWorker;
