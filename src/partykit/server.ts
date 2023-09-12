@@ -1,10 +1,4 @@
-import type {
-  Party,
-  PartyKitServer,
-  Connection,
-  ConnectionContext,
-  Request,
-} from "partykit/server";
+import type * as Party from "partykit/server";
 
 import type { Mosaic, SyncMessage, UpdateMessage } from "./shared";
 import { MOSAIC_ROOM_ID } from "./shared";
@@ -34,12 +28,12 @@ function getDefaultMosiac() {
   };
 }
 
-export default class MosaicParty implements PartyKitServer {
+export default class MosaicParty implements Party.Server {
   readonly options = {
     hibernate: true,
   };
 
-  constructor(public party: Party) {}
+  constructor(public party: Party.Party) {}
 
   async resetGame() {
     await this.party.storage.put("players", getDefaultPlayers());
@@ -56,11 +50,7 @@ export default class MosaicParty implements PartyKitServer {
     }
   }
 
-  async onConnect(
-    connection: Connection,
-    party: Party,
-    ctx: ConnectionContext
-  ) {
+  async onConnect(connection: Party.Connection, ctx: Party.ConnectionContext) {
     let mosaic = (await this.party.storage.get("mosaic")) as Mosaic;
 
     const msg = <SyncMessage>{
@@ -70,7 +60,7 @@ export default class MosaicParty implements PartyKitServer {
     connection.send(JSON.stringify(msg));
   }
 
-  async onMessage(message: string | ArrayBuffer, connection: Connection) {
+  async onMessage(message: string | ArrayBuffer, connection: Party.Connection) {
     const msg = JSON.parse(message as string);
     if (msg.type === "turn") {
       const players = (await this.party.storage.get("players")) as Set<string>;
@@ -108,7 +98,7 @@ export default class MosaicParty implements PartyKitServer {
   // As a debug endpoint, return the current state of the game from room storage
   // The url is NEXT_PUBLIC_PARTYKIT_HOST/party/MOSAIC_ROOM_ID
   // e.g. in dev: http://127.0.0.1:1999/party/announcer
-  async onRequest(req: Request) {
+  async onRequest(req: Party.Request) {
     if (this.party.id !== MOSAIC_ROOM_ID) {
       return new Response("Not found", { status: 404 });
     }
