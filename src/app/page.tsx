@@ -11,11 +11,19 @@ export default function Home() {
       <h1 className="text-4xl font-semibold pb-6">Mosaic Challenge</h1>
       <Room roomId={MOSAIC_ROOM_ID} />
 
-      <div className="absolute bottom-3 left-3 text-sm">
+      <div className="fixed bottom-3 left-3 text-sm">
         Made with{" "}
         <Link className="underline" href="https://partykit.io">
           PartyKit
+        </Link>{" "}
+        (
+        <Link
+          className="underline"
+          href="https://github.com/partykit/sketch-mosaic"
+        >
+          GitHub
         </Link>
+        )
       </div>
     </main>
   );
