@@ -1,6 +1,6 @@
 import type * as Party from "partykit/server";
 
-import type { Mosaic, SyncMessage, UpdateMessage } from "./shared";
+import type { Mosaic, SyncMessage, UpdateMessage, HereMessage } from "./shared";
 import { MOSAIC_ROOM_ID } from "./shared";
 
 function getDefaultPlayers() {
@@ -53,11 +53,28 @@ export default class MosaicParty implements Party.Server {
   async onConnect(connection: Party.Connection, ctx: Party.ConnectionContext) {
     let mosaic = (await this.party.storage.get("mosaic")) as Mosaic;
 
-    const msg = <SyncMessage>{
+    const syncMsg = <SyncMessage>{
       type: "sync",
       mosaic: mosaic,
     };
-    connection.send(JSON.stringify(msg));
+    connection.send(JSON.stringify(syncMsg));
+
+    // Also broadcast the number of connections currently here
+    const hereMsg = <HereMessage>{
+      type: "here",
+      connections: Array.from(this.party.getConnections()).length,
+    };
+    this.party.broadcast(JSON.stringify(hereMsg), []);
+  }
+
+  onClose(connection: Party.Connection) {
+    // Broadcast the number of connections currently here
+    // Reduce the number of connections by 1 as this one is above to leave
+    const hereMsg = <HereMessage>{
+      type: "here",
+      connections: Array.from(this.party.getConnections()).length - 1,
+    };
+    this.party.broadcast(JSON.stringify(hereMsg), []);
   }
 
   async onMessage(message: string | ArrayBuffer, connection: Party.Connection) {

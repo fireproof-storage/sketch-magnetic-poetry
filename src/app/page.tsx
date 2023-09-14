@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Room from "./Room";
 import { MOSAIC_ROOM_ID } from "@/partykit/shared";
 
@@ -9,6 +10,13 @@ export default function Home() {
     >
       <h1 className="text-4xl font-semibold pb-6">Mosaic Challenge</h1>
       <Room roomId={MOSAIC_ROOM_ID} />
+
+      <div className="absolute bottom-3 left-3 text-sm">
+        Made with{" "}
+        <Link className="underline" href="https://partykit.io">
+          PartyKit
+        </Link>
+      </div>
     </main>
   );
 }

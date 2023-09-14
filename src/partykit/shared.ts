@@ -42,4 +42,14 @@ export type ResetMessage = {
   type: "reset";
 };
 
-export type Message = SyncMessage | UpdateMessage | TurnMessage | ResetMessage;
+export type HereMessage = {
+  type: "here";
+  connections: number;
+};
+
+export type Message =
+  | SyncMessage
+  | UpdateMessage
+  | TurnMessage
+  | ResetMessage
+  | HereMessage;

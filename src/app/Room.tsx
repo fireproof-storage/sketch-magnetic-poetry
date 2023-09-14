@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import usePartySocket from "partysocket/react";
 import type { Mosaic, Message, Tile } from "@/partykit/shared";
+import ConnectionStatus from "./ConnectionStatus";
 import Grid from "./Grid";
 import Reset from "./Reset";
 
@@ -80,24 +81,27 @@ export default function Room(props: { roomId: string }) {
   );
 
   return (
-    <div className="flex flex-col gap-4 justify-start items-center">
-      <h2 className="text-3xl font-semibold">
-        Draw... <span className="bg-white">{mosaic.challenge}</span>
-      </h2>
-      <div className="flex flex-row gap-2 text-sm">
-        <p>Turns: {mosaic.turns}</p>
-        <p>Players: {mosaic.players}</p>
-        <p>Started: {startedAgo}s ago</p>
+    <>
+      <ConnectionStatus socket={socket} />
+      <div className="flex flex-col gap-4 justify-start items-center">
+        <h2 className="text-3xl font-semibold">
+          Draw... <span className="bg-white">{mosaic.challenge}</span>
+        </h2>
+        <div className="flex flex-row gap-2 text-sm">
+          <p>Turns: {mosaic.turns}</p>
+          <p>Players: {mosaic.players}</p>
+          <p>Started: {startedAgo}s ago</p>
+        </div>
+        <Grid
+          size={mosaic.size}
+          tiles={mosaic.tiles}
+          turnDue={turnDue}
+          handleTurn={handleTurn}
+        />
+        <div className="mt-12">
+          <Reset handleReset={handleReset} />
+        </div>
       </div>
-      <Grid
-        size={mosaic.size}
-        tiles={mosaic.tiles}
-        turnDue={turnDue}
-        handleTurn={handleTurn}
-      />
-      <div className="mt-12">
-        <Reset handleReset={handleReset} />
-      </div>
-    </div>
+    </>
   );
 }
