@@ -1,19 +1,28 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import {
+  HumanizeDurationLanguage,
+  HumanizeDuration,
+} from "humanize-duration-ts";
 import usePartySocket from "partysocket/react";
 import type { Mosaic, Message, Tile } from "@/partykit/shared";
 import ConnectionStatus from "./ConnectionStatus";
 import Grid from "./Grid";
 import Reset from "./Reset";
 
-const host = process.env.NEXT_PUBLIC_PARTYKIT_HOST!;
-const protocol =
-  host?.startsWith("localhost") || host?.startsWith("127.0.0.1")
-    ? "http"
-    : "https";
-
-const party = "sketch-mosaic";
+const humanizer = new HumanizeDuration(new HumanizeDurationLanguage());
+humanizer.addLanguage("shortEn", {
+  y: () => "y",
+  mo: () => "mo",
+  w: () => "w",
+  d: () => "d",
+  h: () => "h",
+  m: () => "m",
+  s: () => "s",
+  ms: () => "ms",
+  decimal: ".",
+});
 
 export default function Room(props: { roomId: string }) {
   const { roomId } = props;
@@ -22,8 +31,8 @@ export default function Room(props: { roomId: string }) {
   const [time, setTime] = useState(new Date());
 
   const socket = usePartySocket({
-    host: host,
-    //party: party,
+    host: process.env.NEXT_PUBLIC_PARTYKIT_HOST!,
+    //party: "main",
     room: roomId,
     onMessage: (message) => {
       const msg = JSON.parse(message.data as string) as Message;
@@ -76,9 +85,14 @@ export default function Room(props: { roomId: string }) {
     );
   };
 
-  const startedAgo = Math.floor(
-    (time.getTime() - new Date(mosaic.startedAt).getTime()) / 1000
+  const startedAgo = Math.max(
+    0,
+    Math.floor((time.getTime() - new Date(mosaic.startedAt).getTime()) / 1000)
   );
+  const startedAgoHuman = humanizer.humanize(startedAgo * 1000, {
+    language: "shortEn",
+    spacer: "",
+  });
 
   return (
     <>
@@ -87,10 +101,10 @@ export default function Room(props: { roomId: string }) {
         <h2 className="text-3xl font-semibold">
           Draw... <span className="bg-white">{mosaic.challenge}</span>
         </h2>
-        <div className="flex flex-row gap-2 text-sm">
+        <div className="flex flex-row flex-wrap gap-2 text-sm">
           <p>Turns: {mosaic.turns}</p>
           <p>Players: {mosaic.players}</p>
-          <p>Started: {startedAgo}s ago</p>
+          <p>Started: {startedAgoHuman} ago</p>
         </div>
         <Grid
           size={mosaic.size}

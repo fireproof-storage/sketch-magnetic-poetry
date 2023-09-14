@@ -60,6 +60,7 @@ export default class MosaicParty implements Party.Server {
     connection.send(JSON.stringify(syncMsg));
 
     // Also broadcast the number of connections currently here
+    // Used by the ConnectionStatus badge
     const hereMsg = <HereMessage>{
       type: "here",
       connections: Array.from(this.party.getConnections()).length,
@@ -69,6 +70,7 @@ export default class MosaicParty implements Party.Server {
 
   onClose(connection: Party.Connection) {
     // Broadcast the number of connections currently here
+    // Used by the ConnectionStatus badge
     // Reduce the number of connections by 1 as this one is above to leave
     const hereMsg = <HereMessage>{
       type: "here",
