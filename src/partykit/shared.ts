@@ -1,3 +1,5 @@
+import { type } from "os";
+
 export const POETRY_ROOM_ID = "announcer";
 
 export type Word = {
@@ -13,6 +15,9 @@ export type Word = {
 export type Words = Record<string, Word>
 
 export type Poem = {
+  type: "poem";
+  // for the database
+  _id?: string;
   // set randomly from words.ts
   words: Words;
   // count
