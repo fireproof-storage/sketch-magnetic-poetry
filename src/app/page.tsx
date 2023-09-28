@@ -1,6 +1,10 @@
+'use client'
+import dynamic from 'next/dynamic';
+
 import Link from "next/link";
-import Room from "./Room";
+// import Room from "./Room";
 import { POETRY_ROOM_ID } from "@/partykit/shared";
+const Room = dynamic(() => import('./Room'), { ssr: false });
 
 export default function Home() {
   return (
