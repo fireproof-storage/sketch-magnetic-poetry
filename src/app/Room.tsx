@@ -53,7 +53,6 @@ export default function Room(props: { roomId: string }) {
           turns: msg.turns,
           players: msg.players
         }
-        // console.log("newPoem", newPoem);
         setPoem(newPoem)
         setTurnDue(true)
       }
