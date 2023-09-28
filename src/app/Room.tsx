@@ -8,7 +8,6 @@ import {
 import usePartySocket from "partysocket/react";
 import type { Poem, Message, Word, Words } from "@/partykit/shared";
 import ConnectionStatus from "./ConnectionStatus";
-import Grid from "./Grid";
 import Reset from "./Reset";
 import { MagneticPoem } from "./MagneticPoem";
 
