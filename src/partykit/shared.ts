@@ -1,41 +1,44 @@
-export const MOSAIC_ROOM_ID = "announcer";
+export const POETRY_ROOM_ID = "announcer";
 
-export type Tile = {
-  color: "black" | "white";
-  i: number;
-  j: number;
-};
+export type Word = {
+  id: string;
+  text: string;
+  // updated onDrag
+  position: {
+    x: number;
+    y: number;
+  };
+}
 
-export type Mosaic = {
-  // e.g. "Draw the number 3"
-  challenge: string;
-  // always a square
-  size: number;
-  // key: `${i},${j}`
-  tiles: Record<string, Tile>;
+export type Words = Record<string, Word>
+
+export type Poem = {
+  // set randomly from words.ts
+  words: Words;
   // count
   players: number;
   // count
   turns: number;
   // datetime
   startedAt: number;
-};
+}
+
 
 export type SyncMessage = {
   type: "sync";
-  mosaic: Mosaic;
+  poem: Poem;
 };
 
 export type UpdateMessage = {
   type: "update";
-  tile: Tile;
+  word: Word;
   turns: number;
   players: number;
 };
 
 export type TurnMessage = {
   type: "turn";
-  tile: Tile;
+  word: Word;
 };
 
 export type ResetMessage = {

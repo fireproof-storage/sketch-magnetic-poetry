@@ -1,4 +1,4 @@
-# sketch-mosaic
+# sketch-magnetic-poetry
 
 This is a multiplayer drawing challenge web toy, and can be found at [mosaic-party.vercel.app](https://mosaic-party.vercel.app).
 

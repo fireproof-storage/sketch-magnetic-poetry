@@ -5,8 +5,8 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Mosaic Party",
-  description: "Multiplayer drawing game",
+  title: "Poetry Party",
+  description: "Multiplayer magnetic poetry",
 };
 
 export default function RootLayout({

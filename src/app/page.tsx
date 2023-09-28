@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Room from "./Room";
-import { MOSAIC_ROOM_ID } from "@/partykit/shared";
+import { POETRY_ROOM_ID } from "@/partykit/shared";
 
 export default function Home() {
   return (
@@ -8,8 +8,8 @@ export default function Home() {
       className="flex min-h-screen flex-col items-center justify-start p-6"
       style={{ minHeight: "100dvh" }}
     >
-      <h1 className="text-4xl font-semibold pb-6">Mosaic Challenge</h1>
-      <Room roomId={MOSAIC_ROOM_ID} />
+      <h1 className="text-4xl font-semibold pb-6">Magnetic Poetry</h1>
+      <Room roomId={POETRY_ROOM_ID} />
 
       <div className="fixed bottom-3 left-3 text-sm">
         Made with{" "}
@@ -19,7 +19,7 @@ export default function Home() {
         (
         <Link
           className="underline"
-          href="https://github.com/partykit/sketch-mosaic"
+          href="https://github.com/partykit/sketch-magnetic-poetry"
         >
           GitHub
         </Link>

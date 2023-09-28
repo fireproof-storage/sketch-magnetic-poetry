@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   HumanizeDurationLanguage,
   HumanizeDuration,
 } from "humanize-duration-ts";
 import usePartySocket from "partysocket/react";
-import type { Mosaic, Message, Tile } from "@/partykit/shared";
+import type { Poem, Message, Word, Words } from "@/partykit/shared";
 import ConnectionStatus from "./ConnectionStatus";
 import Grid from "./Grid";
 import Reset from "./Reset";
+import { MagneticPoem } from "./MagneticPoem";
 
 const humanizer = new HumanizeDuration(new HumanizeDurationLanguage());
 humanizer.addLanguage("shortEn", {
@@ -26,7 +27,7 @@ humanizer.addLanguage("shortEn", {
 
 export default function Room(props: { roomId: string }) {
   const { roomId } = props;
-  const [mosaic, setMosaic] = useState<null | Mosaic>(null);
+  const [poem, setPoem] = useState<null | Poem>(null);
   const [turnDue, setTurnDue] = useState(false);
   const [time, setTime] = useState(new Date());
 
@@ -37,23 +38,33 @@ export default function Room(props: { roomId: string }) {
     onMessage: (message) => {
       const msg = JSON.parse(message.data as string) as Message;
       if (msg.type === "sync") {
-        setMosaic(msg.mosaic);
+        setPoem(msg.poem);
         setTurnDue(true);
       } else if (msg.type === "update") {
-        if (!mosaic) return;
-        const newTiles = { ...mosaic.tiles };
-        newTiles[`${msg.tile.i},${msg.tile.j}`] = msg.tile;
-        const newMosaic = {
-          ...mosaic,
-          tiles: newTiles,
+        if (!poem) return;
+        const newWords = { ...poem.words };
+        newWords[msg.word.id] = msg.word;
+        const newPoem = {
+          ...poem,
+          words: newWords,
           turns: msg.turns,
           players: msg.players,
         };
-        setMosaic(newMosaic);
+        // console.log("newPoem", newPoem);
+        setPoem(newPoem);
         setTurnDue(true);
       }
     },
   });
+
+  const setWords = useCallback((words: Words) => {
+    if (!poem) return;
+    const newPoem = {
+      ...poem,
+      words: words,
+    };
+    setPoem(newPoem);
+  }, [setPoem, poem])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -63,16 +74,16 @@ export default function Room(props: { roomId: string }) {
     return () => clearInterval(interval);
   }, []);
 
-  if (!mosaic) {
+  if (!poem) {
     return <div>Loading...</div>;
   }
 
-  const handleTurn = (tile: Tile) => {
+  const handleTurn = (word: Word) => {
     setTurnDue(false);
     socket.send(
       JSON.stringify({
         type: "turn",
-        tile: tile,
+        word: word,
       })
     );
   };
@@ -87,7 +98,7 @@ export default function Room(props: { roomId: string }) {
 
   const startedAgo = Math.max(
     0,
-    Math.floor((time.getTime() - new Date(mosaic.startedAt).getTime()) / 1000)
+    Math.floor((time.getTime() - new Date(poem.startedAt).getTime()) / 1000)
   );
   const startedAgoHuman = humanizer.humanize(startedAgo * 1000, {
     language: "shortEn",
@@ -98,20 +109,15 @@ export default function Room(props: { roomId: string }) {
     <>
       <ConnectionStatus socket={socket} />
       <div className="flex flex-col gap-4 justify-start items-center">
-        <h2 className="text-3xl font-semibold">
-          Draw... <span className="bg-white">{mosaic.challenge}</span>
+        <h2 className="text-xl font-semibold">
+          Arrange, save, and share.
         </h2>
         <div className="flex flex-row flex-wrap gap-2 text-sm">
-          <p>Turns: {mosaic.turns}</p>
-          <p>Players: {mosaic.players}</p>
+          <p>Turns: {poem.turns}</p>
+          <p>Players: {poem.players}</p>
           <p>Started: {startedAgoHuman} ago</p>
         </div>
-        <Grid
-          size={mosaic.size}
-          tiles={mosaic.tiles}
-          turnDue={turnDue}
-          handleTurn={handleTurn}
-        />
+        <MagneticPoem words={poem.words} setWords={setWords} handleTurn={handleTurn} />
         <div className="mt-12">
           <Reset handleReset={handleReset} />
         </div>
