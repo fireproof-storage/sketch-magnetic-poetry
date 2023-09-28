@@ -106,7 +106,7 @@ export default class PoetryParty implements Party.Server {
         turns: poem.turns,
         players: poem.players,
       };
-      this.party.broadcast(JSON.stringify(update), []);
+      this.party.broadcast(JSON.stringify(update), [connection.id]);
     } else if (msg.type === "reset") {
       // Reset storage to defaults, and tell the whole party
       const newPoem = await this.resetGame();
