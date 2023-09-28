@@ -43,7 +43,7 @@ export function MagneticPoem({
   return (
     <div>
       <div
-        // className="bg-blue-200 text-white p-6 m-6 rounded-lg shadow-lg"
+        className="p-6 m-6"
         style={{ width: '512px', height: '512px', position: 'relative' }}
       >
         <div className="flex flex-wrap ">

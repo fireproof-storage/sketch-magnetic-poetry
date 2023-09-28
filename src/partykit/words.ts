@@ -8,7 +8,7 @@ const words = {
   but: 50, so: 50, run: 50, see: 45, hear: 40, speak: 40, feel: 35, touch: 35, think: 30,
   know: 30, understand: 25, learn: 25, remember: 20, forget: 20, live: 5, die: 5, walk: 50,
   jump: 45, talk: 45, listen: 40, write: 40, read: 35, sing: 35, dance: 30, eat: 20,
-  drink: 15, sleep: 15, wake: 10, sit: 10, stand: 5, lie: 5, love: 35, hate: 35, heart: 30,
+  drink: 15, sleep: 15, wake: 10, sit: 10, stand: 5, lie: 5, love: 35, have: 21, heart: 30,
   mind: 30, night: 25, day: 25, moon: 20, sun: 20, stars: 18, planets: 18, rain: 16,
   ocean: 14, sea: 14, wind: 12, breeze: 12, kiss: 10, hug: 10, embrace: 8, hold: 8,
   dream: 7, nightmare: 7, laugh: 6, cry: 6, tears: 5, smiles: 5, whisper: 4, shout: 4,

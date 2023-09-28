@@ -8,7 +8,6 @@ import ConnectionStatus from './ConnectionStatus'
 import Reset from './Reset'
 import { MagneticPoem } from './MagneticPoem'
 
-
 import { useFireproof } from 'use-fireproof'
 import Link from 'next/link'
 
@@ -32,7 +31,7 @@ export default function Room(props: { roomId: string }) {
   const [time, setTime] = useState(new Date())
 
   const { database, useLiveQuery } = useFireproof('poetry-party')
-  const savedPoems = useLiveQuery('startedAt').docs as Poem[]
+  const savedPoems = useLiveQuery('startedAt', { descending: true, limit: 50 }).docs as Poem[]
 
   const socket = usePartySocket({
     host: process.env.NEXT_PUBLIC_PARTYKIT_HOST!,
@@ -116,8 +115,6 @@ export default function Room(props: { roomId: string }) {
     spacer: ''
   })
 
-  console.log('savedPoems', savedPoems)
-
   return (
     <>
       <ConnectionStatus socket={socket} />
@@ -138,25 +135,46 @@ export default function Room(props: { roomId: string }) {
             Save poem
           </button>
         </div>
-        <div className="mt-12 flex justify-center">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-semibold">Saved Poems</h2>
-            <ul>
-
-            </ul>
-            {savedPoems.map((doc, i) => (
-              <li key={i}>
-              <Link href={`/poem/${doc._id}`}>{Object.values(doc.words).map((w)=>w.text).join()}</Link>
-              </li>
-            ))}
-          </div>
+        <div className="mt-4 flex justify-center">
+          <SavedPoems savedPoems={savedPoems} setPoem={setPoem} />
         </div>
       </div>
     </>
   )
 }
 
+interface SavedPoemsProps {
+  savedPoems: Poem[];
+  setPoem: React.Dispatch<React.SetStateAction<Poem | null>>;
+}
+
+const SavedPoems = ({ savedPoems, setPoem }: SavedPoemsProps) => (
+  <div className="flex flex-col gap-2 items-center w-2/3">
+    <h2 className="text-xl font-semibold text-center mb-2">Saved Poems</h2>
+    <ul className="list-reset space-y-4">
+      {savedPoems.map((doc, i) => (
+        <li key={i} className="p-4  hover:bg-yellow-100 rounded-lg cursor-pointer" onClick={() => setPoem(doc)}>
+          <p className="my-2">
+            <span className="font-serif italic">
+              {Object.values(doc.words)
+                .map(w => `"${w.text}"`)
+                .join(', ')
+                }
+            </span>
+          </p>
+          <div className="flex justify-end">
+            <p className="text-xs">
+            {doc.players} authors, 
+              Started on: {new Date(doc.startedAt).toLocaleDateString()}, at {new Date(doc.startedAt).toLocaleTimeString()}
+            </p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+)
+
 export async function getServerSideProps() {
   // By returning an empty object, Next.js will disable SSR for this page.
-  return { props: {} };
+  return { props: {} }
 }
