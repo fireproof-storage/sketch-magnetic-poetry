@@ -1,5 +1,3 @@
-import { type } from "os";
-
 export const POETRY_ROOM_ID = "announcer";
 
 export type Word = {
