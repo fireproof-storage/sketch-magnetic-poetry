@@ -17,7 +17,7 @@ export function MagneticPoem({
 
   const handleStop = (id: string, _e: DraggableEvent, data: DraggableData) => {
     const { x, y } = data
-    const outOfBounds = x < 0 || y < 0 || x > 380 || y > 380
+    const outOfBounds = x < 0 || y < 0 || x > 400 || y > 420
     setActiveId(id)
     if (outOfBounds) {
       setIsAnimating(true)

@@ -16,7 +16,7 @@ function startNewPoem() {
     .map((text, index) => {
       const position = {
         x: Math.floor(30 + (index % 4) * (95 + Math.random() * 10)),
-        y: Math.floor(30 + Math.floor(index / 3.8) * (60 + Math.random() * 20))
+        y: Math.floor(50 + Math.floor(index / 3.8) * (80 + Math.random() * 20))
       }
       return { text, position, id: Math.random().toString(36).slice(2, 9) } as Word
     })

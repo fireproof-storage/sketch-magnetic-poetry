@@ -4,13 +4,12 @@ import { useState, useEffect, useCallback } from 'react'
 import { HumanizeDurationLanguage, HumanizeDuration } from 'humanize-duration-ts'
 import usePartySocket from 'partysocket/react'
 import type { Poem, Message, Word, Words } from '@/partykit/shared'
+import { useFireproof } from 'use-fireproof'
+import { connect } from '@fireproof/partykit'
 import ConnectionStatus from './ConnectionStatus'
 import Reset from './Reset'
 import { MagneticPoem } from './MagneticPoem'
-
-import { useFireproof } from 'use-fireproof'
-
-import { useSwipeable } from 'react-swipeable'
+import { SavedPoems } from './SavedPoems'
 
 const humanizer = new HumanizeDuration(new HumanizeDurationLanguage())
 humanizer.addLanguage('shortEn', {
@@ -28,11 +27,12 @@ humanizer.addLanguage('shortEn', {
 export default function Room(props: { roomId: string }) {
   const { roomId } = props
   const [poem, setPoem] = useState<null | Poem>(null)
-  const [turnDue, setTurnDue] = useState(false)
   const [time, setTime] = useState(new Date())
 
   const { database, useLiveQuery } = useFireproof('poetry-party')
   const savedPoems = useLiveQuery('startedAt', { descending: true, limit: 50 }).docs as Poem[]
+
+  connect.partykit(database, process.env.NEXT_PUBLIC_PARTYKIT_HOST!)
 
   const socket = usePartySocket({
     host: process.env.NEXT_PUBLIC_PARTYKIT_HOST!,
@@ -42,7 +42,6 @@ export default function Room(props: { roomId: string }) {
       const msg = JSON.parse(message.data as string) as Message
       if (msg.type === 'sync') {
         setPoem(msg.poem)
-        setTurnDue(true)
       } else if (msg.type === 'update') {
         if (!poem) return
         const newWords = { ...poem.words }
@@ -54,7 +53,6 @@ export default function Room(props: { roomId: string }) {
           players: msg.players
         }
         setPoem(newPoem)
-        setTurnDue(true)
       }
     }
   })
@@ -84,7 +82,6 @@ export default function Room(props: { roomId: string }) {
   }
 
   const handleTurn = (word: Word) => {
-    setTurnDue(false)
     socket.send(
       JSON.stringify({
         type: 'turn',
@@ -102,7 +99,6 @@ export default function Room(props: { roomId: string }) {
   }
 
   const handleSave = () => {
-    console.log('save', JSON.stringify(poem))
     database.put(poem)
   }
 
@@ -126,7 +122,7 @@ export default function Room(props: { roomId: string }) {
           <p>Started: {startedAgoHuman} ago</p>
         </div>
         <MagneticPoem words={poem.words} setWords={setWords} handleTurn={handleTurn} />
-        <div className="mt-12 flex justify-center">
+        <div className="mt-4 flex justify-center">
           <Reset handleReset={handleReset} />
           <button
             className="bg-white hover:bg-green-200 ml-4 px-2 py-1 rounded-sm"
@@ -135,68 +131,13 @@ export default function Room(props: { roomId: string }) {
             Save poem
           </button>
         </div>
-        <div className="mt-4 flex justify-center">
+        <div className="mt-8 flex justify-center">
           <SavedPoems savedPoems={savedPoems} setPoem={setPoem} />
         </div>
       </div>
     </>
   )
 }
-
-interface SavedPoemsProps {
-  savedPoems: Poem[]
-  setPoem: React.Dispatch<React.SetStateAction<Poem | null>>
-}
-
-const SavedPoem = ({
-  poem,
-  setPoem
-}: {
-  poem: Poem
-  setPoem: React.Dispatch<React.SetStateAction<Poem | null>>
-}) => {
-  const [confirmDelete, setConfirmDelete] = useState(false)
-
-  const handleSwipe = () => {
-    console.log('swipe')
-    setConfirmDelete(true)
-  }
-
-  const handlers = useSwipeable({ onSwiped: handleSwipe })
-
-  return (
-    <li
-      {...handlers}
-      className="p-4  hover:bg-yellow-100 rounded-lg cursor-pointer"
-      onClick={() => setPoem(poem)}
-    >
-      <p className="my-2">
-          <span className="font-serif italic">
-            {Object.values(poem.words)
-              .map(w => `"${w.text}"`)
-              .join(', ')}
-          </span>
-        </p>
-        <div className="flex justify-end">
-          <p className="text-xs">
-            {poem.players} authors, Started on: {new Date(poem.startedAt).toLocaleDateString()}, at{' '}
-            {new Date(poem.startedAt).toLocaleTimeString()}
-          </p>
-        </div>
-      </li>
-  )
-}
-
-const SavedPoems = ({ savedPoems, setPoem }: SavedPoemsProps) => (
-  <div className="flex flex-col gap-2 items-center w-2/3">
-    <h2 className="text-xl font-semibold text-center mb-2">Saved Poems</h2>
-    <ul className="list-reset space-y-4">
-      {savedPoems.map((poem, i) => (
-        <SavedPoem key={i} poem={poem} setPoem={setPoem} />
-      ))}
-    </ul>
-  </div>
-)
 
 export async function getServerSideProps() {
   // By returning an empty object, Next.js will disable SSR for this page.
