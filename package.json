@@ -26,7 +26,7 @@
     "react-swipeable": "^7.0.1",
     "tailwindcss": "3.3.3",
     "typescript": "5.1.6",
-    "use-fireproof": "^0.13.6-dev",
-    "@fireproof/partykit": "^0.13.19"
+    "use-fireproof": "^0.14.0",
+    "@fireproof/partykit": "^0.14.0"
   }
 }

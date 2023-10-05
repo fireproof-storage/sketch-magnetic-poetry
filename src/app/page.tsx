@@ -23,7 +23,7 @@ export default function Home() {
         (
         <Link
           className="underline"
-          href="https://github.com/partykit/sketch-magnetic-poetry"
+          href="https://github.com/fireproof-storage/sketch-magnetic-poetry"
         >
           GitHub
         </Link>
