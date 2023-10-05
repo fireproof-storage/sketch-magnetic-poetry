@@ -15,10 +15,13 @@ export default function Home() {
       <h1 className="text-4xl font-semibold pb-6">Magnetic Poetry</h1>
       <Room roomId={POETRY_ROOM_ID} />
 
-      <div className="fixed bottom-3 left-3 text-sm">
+      <div className="fixed bottom-3 left-3 text-sm bg-yellow-200">
         Made with{" "}
         <Link className="underline" href="https://partykit.io">
           PartyKit
+        </Link>{" "}
+        and <Link className="underline" href="https://use-fireproof.com">
+          Fireproof
         </Link>{" "}
         (
         <Link
@@ -28,6 +31,7 @@ export default function Home() {
           GitHub
         </Link>
         )
+        
       </div>
     </main>
   );
