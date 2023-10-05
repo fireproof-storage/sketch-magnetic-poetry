@@ -4,12 +4,7 @@ This is a multiplayer magnetic poetry web toy, running at [magnetic-poetry.use-f
 
 Users can drag and drop word tiles in collaboration with others in the same room. You can choose to save poems to the attached Fireproof database. Click the 🔥 link to see your data in the database.
 
-![image](/assets/screenshot.png)
-
-## Experimental!
-
-This app was created during [Matt](https://interconnected.org)'s summer 2023 residency. The purpose is to experiment with multiplayer interactions, and simultaneously see what PartyKit can do. It's called a sketch because it's lightweight and quick, and because we learn something in making it.
-
+Thanks to [Matt Webb for creating the original app this is based on.](https://github.com/partykit/sketch-mosaic)
 ## What you'll find here
 
 This app is based on Next.js and PartyKit.
@@ -36,6 +31,9 @@ And see how to configure PartyKit for Fireproof in `partykit.json`:
   }
 }
 ```
+
+![image](/assets/screenshot.png)
+
 
 ## To run this locally
 
